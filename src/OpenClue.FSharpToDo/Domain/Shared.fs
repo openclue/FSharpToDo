@@ -34,4 +34,10 @@ module UserId =
         match id with
         | id when id = Guid.Empty -> "Empty Guid" |> Error
         | _ -> UserId id |> Ok
-        
+
+
+type Decider<'C, 'E, 'S, 'ERR> =
+    { decide: 'S -> 'C -> Result<'E list, 'ERR>
+      evolve: 'S -> 'E -> 'S
+      initialState: 'S
+      isComplete: 'S -> bool }
