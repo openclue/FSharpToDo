@@ -1,4 +1,6 @@
-module OpenClue.FSharpToDo.Domain.Task
+module OpenClue.FSharpToDo.Domain.TaskDecider
+
+open OpenClue.FSharpToDo.Domain
 
 let private handleCreateTaskCommand (cmd: CreateTaskArgs) state =
     match state with
@@ -109,7 +111,7 @@ let private evolve state event =
 
 
 //// Task Decider //////////////////////////////////////////////////////////////////////
-let taskDecider =
+let create() = 
     { decide = decide
       evolve = evolve
       initialState = Task.None
