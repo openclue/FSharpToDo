@@ -7,7 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6EF96BFA-23E
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "OpenClue.FSharpToDo", "src\OpenClue.FSharpToDo\OpenClue.FSharpToDo.fsproj", "{61B61516-E74D-40E9-A756-727F153A82B9}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "OpenClue.FSharpToDo.Tests", "src\OpenClue.FSharpToDo.Tests\OpenClue.FSharpToDo.Tests.fsproj", "{80DAD510-2B8E-4809-A509-A24E13CBA377}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{48EEFC7C-7827-45DF-9AC5-119C80991815}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "OpenClue.FSharpToDo.Tests", "tests\OpenClue.FSharpToDo.Tests\OpenClue.FSharpToDo.Tests.fsproj", "{80DAD510-2B8E-4809-A509-A24E13CBA377}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{61B61516-E74D-40E9-A756-727F153A82B9} = {6EF96BFA-23E1-4BCB-99FF-CED092922836}
-		{80DAD510-2B8E-4809-A509-A24E13CBA377} = {6EF96BFA-23E1-4BCB-99FF-CED092922836}
+		{80DAD510-2B8E-4809-A509-A24E13CBA377} = {48EEFC7C-7827-45DF-9AC5-119C80991815}
 	EndGlobalSection
 EndGlobal

@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OpenClue.FSharpToDo\OpenClue.FSharpToDo.fsproj" />
+      <ProjectReference Include="..\..\src\OpenClue.FSharpToDo\OpenClue.FSharpToDo.fsproj" />
     </ItemGroup>
 
 </Project>
