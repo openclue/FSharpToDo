@@ -111,7 +111,7 @@ let private evolve state event =
 
 
 //// Task Decider //////////////////////////////////////////////////////////////////////
-let create() = 
+let create () =
     { decide = decide
       evolve = evolve
       initialState = Task.None

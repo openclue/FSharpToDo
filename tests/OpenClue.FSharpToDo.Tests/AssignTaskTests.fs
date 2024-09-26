@@ -1,6 +1,5 @@
 module OpenClue.FSharpToDo.Tests.AssignTaskTests
 
-open FsToolkit.ErrorHandling
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
 open Xunit
@@ -25,7 +24,7 @@ let private assignedTask =
           Assignee = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
-        
+
 let private completedTask =
     Task.Completed
         { Id = taskId
@@ -69,9 +68,7 @@ let ``Given AssignTaskCommand and assigned Task When TaskDecider decide Then Tas
     events |> should equal expectedEvents
 
 [<Fact>]
-let ``Given AssignTaskCommand and completed Task When TaskDecider decide Then error is returned``
-    ()
-    =
+let ``Given AssignTaskCommand and completed Task When TaskDecider decide Then error is returned`` () =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
     let cmd = TaskCommand.AssignTask { Id = taskId; Assignee = assignee }
