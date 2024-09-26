@@ -9,7 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Shared.fs" />
         <Compile Include="CreateTaskTests.fs" />
+        <Compile Include="AssignTaskTests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

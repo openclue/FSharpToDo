@@ -1,59 +1,60 @@
 module OpenClue.FSharpToDo.Tests.Task.CreateTaskTests
 
-open FsToolkit.ErrorHandling
 open OpenClue.FSharpToDo.Domain
-open System
 open FsUnit.Xunit
 open Xunit
+open OpenClue.FSharpToDo.Tests.Shared
 
 
-let decider = TaskDecider.create ()
-let taskGuid = Guid.NewGuid()
-let authorGuid = Guid.NewGuid()
-
-let buildCreateTaskArgs title priority =
-    match
-        result {
-            let! id = taskGuid |> TaskId.fromGuid
-            let! author = authorGuid |> UserId.fromGuid
-            let! title = title |> NonEmptyString.create
-            let priority = priority
-
-            let args: CreateTaskArgs =
-                { Id = id
-                  Author = author
-                  Title = title
-                  Priority = priority }
-
-            return args
-        }
-    with
-    | Ok args -> args
-    | Error err -> failwith err
-
-let buildExpectedEvent (cmdArgs: CreateTaskArgs) =
-    TaskEvent.TaskCreated
-        { Id = cmdArgs.Id
-          Author = cmdArgs.Author
-          Title = cmdArgs.Title
-          Priority = cmdArgs.Priority }
-
-let decide createTaskCommand =
-    match (decider.decide decider.initialState createTaskCommand) with
-    | Ok events -> events
-    | Error err -> failwith err
+let taskId = createGuid () |> createTaskIdOrFail
+let author = createGuid () |> createUserIdOrFail
+let title = createNonEmptyStringOrFail "Test task"
+let priority = TaskPriority.High
 
 
 [<Fact>]
-let ``Given valid CreateTask command When TaskDecider decide Then TaskCreated event is created`` () =
+let ``Given valid CreateTaskCommand When TaskDecider decide Then TaskCreatedEvent is created`` () =
     // Arrange
-    let cmdArgs = buildCreateTaskArgs "Title" TaskPriority.Low
-    let expectedEvent = buildExpectedEvent cmdArgs
-    let cmd = TaskCommand.CreateTask cmdArgs
+    let cmd =
+        TaskCommand.CreateTask
+            { Id = taskId
+              Author = author
+              Title = title
+              Priority = priority }
+
+    let expectedEvent =
+        TaskEvent.TaskCreated
+            { Id = taskId
+              Author = author
+              Title = title
+              Priority = priority }
 
     // Act
-    let events = decide cmd
+    let events = decideOrFail decider.initialState cmd
 
     // Assert
     List.length events |> should equal 1
     List.head events |> should equal expectedEvent
+
+[<Fact>]
+let ``Given TaskCreatedEvent When TaskDecider evolve Then Task state is Unassigned`` () =
+    // Arrange
+    let event =
+        TaskEvent.TaskCreated
+            { Id = taskId
+              Author = author
+              Title = title
+              Priority = priority }
+
+    let expectedState =
+        Task.Unassigned
+            { Id = taskId
+              Author = author
+              Title = title
+              Priority = priority }
+
+    // Act
+    let newState = decider.evolve decider.initialState event
+
+    // Assert
+    newState |> should equal expectedState
