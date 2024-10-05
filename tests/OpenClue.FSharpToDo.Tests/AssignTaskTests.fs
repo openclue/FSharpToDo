@@ -1,9 +1,11 @@
 module OpenClue.FSharpToDo.Tests.Task.AssignTaskTests
 
+open OpenClue.FSharpToDo.Domain.TaskDecider
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
 open Xunit
 open FsUnit.Xunit
+open FsUnit.CustomMatchers
 
 let private taskId = createGuid () |> createTaskIdOrFail
 let private author = createGuid () |> createUserIdOrFail
@@ -77,4 +79,4 @@ let ``Given AssignTaskCommand and completed Task When TaskDecider decide Then er
     let result = decide completedTask cmd
 
     // Assert
-    result |> shouldBeError
+    result |> should be (ofCase <@ TaskCommandResult.Error @>)

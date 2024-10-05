@@ -2,6 +2,8 @@ module OpenClue.FSharpToDo.Domain.TaskDecider
 
 open OpenClue.FSharpToDo.Domain
 
+type TaskCommandResult = Result<TaskEvent list, string>
+
 let private handleCreateTaskCommand (cmd: CreateTaskArgs) state =
     match state with
     | None ->

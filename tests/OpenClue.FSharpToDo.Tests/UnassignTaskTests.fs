@@ -1,9 +1,11 @@
 module OpenClue.FSharpToDo.Tests.Task.UnassignTaskTests
 
+open OpenClue.FSharpToDo.Domain.TaskDecider
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
 open Xunit
 open FsUnit.Xunit
+open FsUnit.CustomMatchers
 
 let private taskId = createGuid () |> createTaskIdOrFail
 let private author = createGuid () |> createUserIdOrFail
@@ -32,7 +34,7 @@ let private completedTask =
           CompletedBy = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
-        
+
 [<Fact>]
 let ``Given UnassignTaskCommand and assigned Task When TaskDecider decide Then TaskUnassignedEvent is created`` () =
     // Arrange
@@ -46,7 +48,10 @@ let ``Given UnassignTaskCommand and assigned Task When TaskDecider decide Then T
     List.length events |> should equal 1
     List.head events |> should equal expectedEvent
 
-
+type TestUnion =
+    | First
+    | Second of int
+    | Third of string
 
 [<Fact>]
 let ``Given UnassignTaskCommand and unassigned Task When TaskDecider decide Then error is returned`` () =
@@ -57,6 +62,4 @@ let ``Given UnassignTaskCommand and unassigned Task When TaskDecider decide Then
     let result = decide unassignedTask cmd
 
     // Assert
-    result |> shouldBeError
-
-
+    result |> should be (ofCase <@ TaskCommandResult.Error @>)
