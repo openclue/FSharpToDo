@@ -1,4 +1,4 @@
-module OpenClue.FSharpToDo.Tests.AssignTaskTests
+module OpenClue.FSharpToDo.Tests.Task.AssignTaskTests
 
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
@@ -77,6 +77,4 @@ let ``Given AssignTaskCommand and completed Task When TaskDecider decide Then er
     let result = decide completedTask cmd
 
     // Assert
-    match result with
-    | Ok _ -> failwith "Expected error"
-    | Error err -> err |> ignore
+    result |> shouldBeError

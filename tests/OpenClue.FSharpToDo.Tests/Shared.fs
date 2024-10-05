@@ -20,3 +20,8 @@ let decide state command = decider.decide state command
 
 let decideOrFail state command =
     decider.decide state command |> unwrapOrFail
+
+let shouldBeError (result: Result<'A, 'B>) =
+    match result with
+    | Ok _ -> failwith "Expected error"
+    | Error _ -> ()
