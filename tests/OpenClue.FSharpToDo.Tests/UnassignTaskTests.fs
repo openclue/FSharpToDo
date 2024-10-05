@@ -58,6 +58,5 @@ let ``Given UnassignTaskCommand and unassigned Task When TaskDecider decide Then
 
     // Assert
     result |> shouldBeError
-    result |> should beError
 
 
