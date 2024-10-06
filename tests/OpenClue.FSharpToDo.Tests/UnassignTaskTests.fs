@@ -48,11 +48,6 @@ let ``Given UnassignTaskCommand and assigned Task When TaskDecider decide Then T
     List.length events |> should equal 1
     List.head events |> should equal expectedEvent
 
-type TestUnion =
-    | First
-    | Second of int
-    | Third of string
-
 [<Fact>]
 let ``Given UnassignTaskCommand and unassigned Task When TaskDecider decide Then error is returned`` () =
     // Arrange
