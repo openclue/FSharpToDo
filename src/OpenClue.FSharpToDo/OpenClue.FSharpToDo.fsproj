@@ -9,10 +9,13 @@
         <Compile Include="Domain\Shared.fs"/>
         <Compile Include="Domain\Models.fs"/>
         <Compile Include="Domain\TaskDecider.fs"/>
+        <Compile Include="Persistence\Projections.fs" />
+        <Compile Include="Persistence\Repository.fs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Update="FSharp.Core" Version="8.0.400"/>
+        <PackageReference Include="Marten" Version="7.29.0" />
     </ItemGroup>
 
 </Project>
