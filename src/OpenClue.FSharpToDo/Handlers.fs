@@ -19,17 +19,18 @@ type Response =
     | Success of obj
     | Failure of AppError
 
-let mapTodoError (todoError: TodoError) =
+let mapToAppError (todoError: TodoError) =
     match todoError with
     | InvalidCommand err -> BadRequest err
     | AlreadyExists id -> BadRequest $"Todo with id [{id}] already exists"
     | InvalidState err -> BadRequest err
     | TodoError.NotFound id -> NotFound id
 
-let getLoggedUserId (ctx: HttpContext) =
+// For future use - to get the command's initiator
+let private getLoggedUserId (ctx: HttpContext) =
     ctx.User.FindFirst(ClaimTypes.NameIdentifier).Value |> UserId.fromString
 
-let saveEvents store (id, events) =
+let private saveEvents store (id, events) =
     async {
         let! result = Repository.saveEvents store (id, events)
         
@@ -37,19 +38,19 @@ let saveEvents store (id, events) =
     }
     
 
-let createTodoAsync store commandDto : Async<Result<TodoId, AppError>> =
+let private createTodoAsync store commandDto : Async<Result<TodoId, AppError>> =
     asyncResult {
-        let! crateResult = CreateTask.handle commandDto |> Result.mapError mapTodoError
+        let! crateResult = CreateTodo.handle commandDto |> Result.mapError mapToAppError
         let! saveResult = saveEvents store crateResult
         return saveResult
     }
 
 
-let createTaskHandler =
+let createTodoHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
             let store = ctx.RequestServices.GetRequiredService<IDocumentStore>()
-            let! dto = ctx.BindJsonAsync<CreateTask.Dto>()
+            let! dto = ctx.BindJsonAsync<CreateTodo.Dto>()
             
             let! result = createTodoAsync store dto
             

@@ -17,7 +17,7 @@ let private handleEvents (state: Todo) (events: TodoEvent list) =
     
     
 [<RequireQualifiedAccess>] 
-module CreateTask =
+module CreateTodo =
     
     type Dto =
         { Title: string
