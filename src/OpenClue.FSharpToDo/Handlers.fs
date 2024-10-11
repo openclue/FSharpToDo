@@ -14,7 +14,7 @@ type AppError =
     | BadRequest of string
     | NotFound of TodoId
     | InternalError of string
-    
+
 type Response =
     | Success of obj
     | Failure of AppError
@@ -33,31 +33,27 @@ let private getLoggedUserId (ctx: HttpContext) =
 let private saveEvents store (id, events) =
     async {
         let! result = Repository.saveEvents store (id, events)
-        
+
         return result |> Result.mapError InternalError
     }
-    
-
-let private createTodoAsync store commandDto : Async<Result<TodoId, AppError>> =
-    asyncResult {
-        let! crateResult = CreateTodo.handle commandDto |> Result.mapError mapToAppError
-        let! saveResult = saveEvents store crateResult
-        return saveResult
-    }
-
 
 let createTodoHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
         task {
-            let store = ctx.RequestServices.GetRequiredService<IDocumentStore>()
-            let! dto = ctx.BindJsonAsync<CreateTodo.Dto>()
-            
-            let! result = createTodoAsync store dto
-            
+            let! result =
+                asyncResult {
+                    let store = ctx.RequestServices.GetRequiredService<IDocumentStore>()
+                    let! dto = ctx.BindJsonAsync<CreateTodo.Dto>()
+                    let! cmdResult = CreateTodo.handle dto |> Result.mapError mapToAppError
+                    let! saveResult = saveEvents store cmdResult
+                    
+                    return saveResult
+                }
+
             let response =
                 match result with
                 | Ok id -> Success id
                 | Error err -> Failure err
-            
+
             return! json response next ctx
         }
