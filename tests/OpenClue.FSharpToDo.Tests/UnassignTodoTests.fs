@@ -1,4 +1,4 @@
-module OpenClue.FSharpToDo.Tests.Task.UnassignTaskTests
+module OpenClue.FSharpToDo.Tests.Todo.UnassignTodoTests
 
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
@@ -6,54 +6,54 @@ open Xunit
 open FsUnit.Xunit
 open FsUnit.CustomMatchers
 
-let private taskId = createGuid () |> createTaskIdOrFail
+let private todoId = createGuid () |> createTodoIdOrFail
 let private author = createGuid () |> createUserIdOrFail
 let private title = createNonEmptyStringOrFail "Assign task tests"
 let private priority = TodoPriority.High
 
-let private unassignedTask =
+let private unassignedTodo =
     Todo.Unassigned
-        { Id = taskId
+        { Id = todoId
           Author = author
           Title = title
           Priority = priority }
 
-let private assignedTask =
+let private assignedTodo =
     Todo.Assigned
-        { Id = taskId
+        { Id = todoId
           Author = author
           Assignee = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
 
-let private completedTask =
+let private completedTodo =
     Todo.Completed
-        { Id = taskId
+        { Id = todoId
           Author = author
           CompletedBy = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
 
 [<Fact>]
-let ``Given UnassignTaskCommand and assigned Task When TaskDecider decide Then TaskUnassignedEvent is created`` () =
+let ``Given UnassignTodoCommand and assigned Todo When TodoDecider decide Then TodoUnassignedEvent is created`` () =
     // Arrange
-    let cmd = TodoCommand.UnassignTodo { Id = taskId }
-    let expectedEvent = TodoEvent.TodoUnassigned { Id = taskId }
+    let cmd = TodoCommand.UnassignTodo { Id = todoId }
+    let expectedEvent = TodoEvent.TodoUnassigned { Id = todoId }
 
     // Act
-    let events = decideOrFail assignedTask cmd
+    let events = decideOrFail assignedTodo cmd
 
     // Assert
     List.length events |> should equal 1
     List.head events |> should equal expectedEvent
 
 [<Fact>]
-let ``Given UnassignTaskCommand and unassigned Task When TaskDecider decide Then error is returned`` () =
+let ``Given UnassignTodoCommand and unassigned Todo When TodoDecider decide Then error is returned`` () =
     // Arrange
-    let cmd = TodoCommand.UnassignTodo { Id = taskId }
+    let cmd = TodoCommand.UnassignTodo { Id = todoId }
 
     // Act
-    let result = decide unassignedTask cmd
+    let result = decide unassignedTodo cmd
 
     // Assert
     result |> should be (ofCase <@ TodoCommandResult.Error @>)

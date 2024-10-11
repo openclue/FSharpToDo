@@ -10,7 +10,7 @@ let unwrapOrFail result =
 
 let decider = Todo.decider
 let createGuid () = Guid.NewGuid()
-let createTaskIdOrFail id = id |> TodoId.fromGuid |> unwrapOrFail
+let createTodoIdOrFail id = id |> TodoId.fromGuid |> unwrapOrFail
 let createUserIdOrFail id = id |> UserId.fromGuid |> unwrapOrFail
 
 let createNonEmptyStringOrFail value =

@@ -10,9 +10,9 @@
 
     <ItemGroup>
         <Compile Include="Shared.fs"/>
-        <Compile Include="CreateTaskTests.fs"/>
-        <Compile Include="AssignTaskTests.fs"/>
-        <Compile Include="UnassignTaskTests.fs"/>
+        <Compile Include="CreateTodoTests.fs" />
+        <Compile Include="AssignTodoTests.fs" />
+        <Compile Include="UnassignTodoTests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

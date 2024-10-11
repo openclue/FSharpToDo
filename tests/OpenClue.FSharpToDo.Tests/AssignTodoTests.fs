@@ -1,4 +1,4 @@
-module OpenClue.FSharpToDo.Tests.Task.AssignTaskTests
+module OpenClue.FSharpToDo.Tests.Todo.AssignTodoTests
 
 open OpenClue.FSharpToDo.Tests.Shared
 open OpenClue.FSharpToDo.Domain
@@ -6,43 +6,43 @@ open Xunit
 open FsUnit.Xunit
 open FsUnit.CustomMatchers
 
-let private taskId = createGuid () |> createTaskIdOrFail
+let private todoId = createGuid () |> createTodoIdOrFail
 let private author = createGuid () |> createUserIdOrFail
-let private title = createNonEmptyStringOrFail "Assign task tests"
+let private title = createNonEmptyStringOrFail "Assign todo tests"
 let private priority = TodoPriority.High
 
-let private unassignedTask =
+let private unassignedTodo =
     Todo.Unassigned
-        { Id = taskId
+        { Id = todoId
           Author = author
           Title = title
           Priority = priority }
 
-let private assignedTask =
+let private assignedTodo =
     Todo.Assigned
-        { Id = taskId
+        { Id = todoId
           Author = author
           Assignee = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
 
-let private completedTask =
+let private completedTodo =
     Todo.Completed
-        { Id = taskId
+        { Id = todoId
           Author = author
           CompletedBy = createGuid () |> createUserIdOrFail
           Title = title
           Priority = priority }
 
 [<Fact>]
-let ``Given AssignTaskCommand and unassigned Task When TaskDecider decide Then TaskAssignedEvent is created`` () =
+let ``Given AssignTodoCommand and unassigned Todo When TodoDecider decide Then TodoAssignedEvent is created`` () =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = taskId; Assignee = assignee }
-    let expectedEvent = TodoEvent.TodoAssigned { Id = taskId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
+    let expectedEvent = TodoEvent.TodoAssigned { Id = todoId; Assignee = assignee }
 
     // Act
-    let events = decideOrFail unassignedTask cmd
+    let events = decideOrFail unassignedTodo cmd
 
     // Assert
     List.length events |> should equal 1
@@ -50,32 +50,32 @@ let ``Given AssignTaskCommand and unassigned Task When TaskDecider decide Then T
 
 
 [<Fact>]
-let ``Given AssignTaskCommand and assigned Task When TaskDecider decide Then TaskUnassignedEvent and TaskAssignedEvent are created``
+let ``Given AssignTodoCommand and assigned Todo When TodoDecider decide Then TodoUnassignedEvent and TodoAssignedEvent are created``
     ()
     =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = taskId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
 
     let expectedEvents =
-        [ TodoEvent.TodoUnassigned { Id = taskId }
-          TodoEvent.TodoAssigned { Id = taskId; Assignee = assignee } ]
+        [ TodoEvent.TodoUnassigned { Id = todoId }
+          TodoEvent.TodoAssigned { Id = todoId; Assignee = assignee } ]
 
     // Act
-    let events = decideOrFail assignedTask cmd
+    let events = decideOrFail assignedTodo cmd
 
     // Assert
     List.length events |> should equal 2
     events |> should equal expectedEvents
 
 [<Fact>]
-let ``Given AssignTaskCommand and completed Task When TaskDecider decide Then error is returned`` () =
+let ``Given AssignTodoCommand and completed Todo When TodoDecider decide Then error is returned`` () =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = taskId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
 
     // Act
-    let result = decide completedTask cmd
+    let result = decide completedTodo cmd
 
     // Assert
     result |> should be (ofCase <@ TodoCommandResult.Error @>)

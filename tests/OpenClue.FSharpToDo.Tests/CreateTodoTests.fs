@@ -1,4 +1,4 @@
-module OpenClue.FSharpToDo.Tests.Task.CreateTaskTests
+module OpenClue.FSharpToDo.Tests.Todo.CreateTodoTests
 
 open OpenClue.FSharpToDo.Domain
 open FsUnit.Xunit
@@ -6,25 +6,25 @@ open Xunit
 open OpenClue.FSharpToDo.Tests.Shared
 
 
-let taskId = createGuid () |> createTaskIdOrFail
+let todoId = createGuid () |> createTodoIdOrFail
 let author = createGuid () |> createUserIdOrFail
-let title = createNonEmptyStringOrFail "Test task"
+let title = createNonEmptyStringOrFail "Test todo"
 let priority = TodoPriority.High
 
 
 [<Fact>]
-let ``Given valid CreateTaskCommand When TaskDecider decide Then TaskCreatedEvent is created`` () =
+let ``Given valid CreateTodoCommand When TodoDecider decide Then TodoCreatedEvent is created`` () =
     // Arrange
     let cmd =
         TodoCommand.CreateTodo
-            { Id = taskId
+            { Id = todoId
               Author = author
               Title = title
               Priority = priority }
 
     let expectedEvent =
         TodoEvent.TodoCreated
-            { Id = taskId
+            { Id = todoId
               Author = author
               Title = title
               Priority = priority }
@@ -37,18 +37,18 @@ let ``Given valid CreateTaskCommand When TaskDecider decide Then TaskCreatedEven
     List.head events |> should equal expectedEvent
 
 [<Fact>]
-let ``Given TaskCreatedEvent When TaskDecider evolve Then Task state is Unassigned`` () =
+let ``Given TodoCreatedEvent When TodoDecider evolve Then Todo state is Unassigned`` () =
     // Arrange
     let event =
         TodoEvent.TodoCreated
-            { Id = taskId
+            { Id = todoId
               Author = author
               Title = title
               Priority = priority }
 
     let expectedState =
         Todo.Unassigned
-            { Id = taskId
+            { Id = todoId
               Author = author
               Title = title
               Priority = priority }
