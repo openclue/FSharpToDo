@@ -19,7 +19,6 @@ let private handleEvents (state: Todo) (events: TodoEvent list) =
 [<RequireQualifiedAccess>] 
 module CreateTask =
     
-    [<RequireQualifiedAccess>]
     type Dto =
         { Title: string
           AuthorId: string
