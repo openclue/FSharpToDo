@@ -14,16 +14,18 @@ module NonEmptyString =
     let value (NonEmptyString value) = value
 
 
-type TaskId = private TaskId of Guid
+type TodoId = private Todo of Guid
 
-module TaskId =
-    let toGuid (TaskId id) = id
+module TodoId =
+    let toGuid (Todo id) = id
 
     let fromGuid id =
         match id with
         | id when id = Guid.Empty -> "Empty Guid" |> Error
-        | _ -> TaskId id |> Ok
+        | _ -> Todo id |> Ok
 
+    
+    let newId () = Guid.NewGuid() |> Todo
 
 type UserId = private UserId of Guid
 
@@ -35,7 +37,13 @@ module UserId =
         | id when id = Guid.Empty -> "Empty Guid" |> Error
         | _ -> UserId id |> Ok
 
-
+    let fromString (id: string) =
+        try
+            Guid.Parse id |> fromGuid 
+        with _ ->
+            $"Invalid UserId: [{id}]" |> Error
+            
+            
 type Decider<'C, 'E, 'S, 'ERR> =
     { decide: 'S -> 'C -> Result<'E list, 'ERR>
       evolve: 'S -> 'E -> 'S

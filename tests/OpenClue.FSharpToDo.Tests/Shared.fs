@@ -6,11 +6,11 @@ open System
 let unwrapOrFail result =
     match result with
     | Ok value -> value
-    | Error err -> failwith err
+    | Error _ -> failwith "Unwrapping failed"
 
-let decider = TaskDecider.create ()
+let decider = Todo.decider
 let createGuid () = Guid.NewGuid()
-let createTaskIdOrFail id = id |> TaskId.fromGuid |> unwrapOrFail
+let createTaskIdOrFail id = id |> TodoId.fromGuid |> unwrapOrFail
 let createUserIdOrFail id = id |> UserId.fromGuid |> unwrapOrFail
 
 let createNonEmptyStringOrFail value =

@@ -9,21 +9,21 @@ open OpenClue.FSharpToDo.Tests.Shared
 let taskId = createGuid () |> createTaskIdOrFail
 let author = createGuid () |> createUserIdOrFail
 let title = createNonEmptyStringOrFail "Test task"
-let priority = TaskPriority.High
+let priority = TodoPriority.High
 
 
 [<Fact>]
 let ``Given valid CreateTaskCommand When TaskDecider decide Then TaskCreatedEvent is created`` () =
     // Arrange
     let cmd =
-        TaskCommand.CreateTask
+        TodoCommand.CreateTodo
             { Id = taskId
               Author = author
               Title = title
               Priority = priority }
 
     let expectedEvent =
-        TaskEvent.TaskCreated
+        TodoEvent.TodoCreated
             { Id = taskId
               Author = author
               Title = title
@@ -40,14 +40,14 @@ let ``Given valid CreateTaskCommand When TaskDecider decide Then TaskCreatedEven
 let ``Given TaskCreatedEvent When TaskDecider evolve Then Task state is Unassigned`` () =
     // Arrange
     let event =
-        TaskEvent.TaskCreated
+        TodoEvent.TodoCreated
             { Id = taskId
               Author = author
               Title = title
               Priority = priority }
 
     let expectedState =
-        Task.Unassigned
+        Todo.Unassigned
             { Id = taskId
               Author = author
               Title = title
