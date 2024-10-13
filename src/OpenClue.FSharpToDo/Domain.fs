@@ -49,7 +49,7 @@ type CreateTodoArgs =
       Title: NonEmptyString
       Priority: TodoPriority }
 
-type AssignTodoArgs = { Id: TodoId; Assignee: UserId }
+type AssignTodoArgs = { Assignee: UserId }
 
 type UnassignTodoArgs = { Id: TodoId }
 
@@ -204,3 +204,5 @@ module Todo =
             function
             | Todo.Completed _ -> true
             | _ -> false }
+
+    
