@@ -38,7 +38,7 @@ let private completedTodo =
 let ``Given AssignTodoCommand and unassigned Todo When TodoDecider decide Then TodoAssignedEvent is created`` () =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Assignee = assignee }
     let expectedEvent = TodoEvent.TodoAssigned { Id = todoId; Assignee = assignee }
 
     // Act
@@ -55,7 +55,7 @@ let ``Given AssignTodoCommand and assigned Todo When TodoDecider decide Then Tod
     =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Assignee = assignee }
 
     let expectedEvents =
         [ TodoEvent.TodoUnassigned { Id = todoId }
@@ -72,7 +72,7 @@ let ``Given AssignTodoCommand and assigned Todo When TodoDecider decide Then Tod
 let ``Given AssignTodoCommand and completed Todo When TodoDecider decide Then error is returned`` () =
     // Arrange
     let assignee = createGuid () |> createUserIdOrFail
-    let cmd = TodoCommand.AssignTodo { Id = todoId; Assignee = assignee }
+    let cmd = TodoCommand.AssignTodo { Assignee = assignee }
 
     // Act
     let result = decide completedTodo cmd

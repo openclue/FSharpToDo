@@ -117,7 +117,7 @@ module Todo =
                   { Id = task.Id
                     Assignee = cmd.Assignee } ]
             |> Ok
-        | None -> TodoError.NotFound cmd.Id |> Error
+        | None -> TodoError.InvalidState "Todo not initialized" |> Error
         | _ -> TodoError.InvalidState "Todo cannot be assigned in its current state" |> Error
 
     let private handleUnassignTaskCommand (cmd: UnassignTodoArgs) state =
