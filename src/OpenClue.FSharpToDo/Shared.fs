@@ -24,7 +24,7 @@ module TodoId =
         | id when id = Guid.Empty -> "Empty Guid" |> Error
         | _ -> Todo id |> Ok
 
-    
+
     let newId () = Guid.NewGuid() |> Todo
 
 type UserId = private UserId of Guid
@@ -39,11 +39,11 @@ module UserId =
 
     let fromString (id: string) =
         try
-            Guid.Parse id |> fromGuid 
+            Guid.Parse id |> fromGuid
         with _ ->
             $"Invalid UserId: [{id}]" |> Error
-            
-            
+
+
 type Decider<'C, 'E, 'S, 'ERR> =
     { decide: 'S -> 'C -> Result<'E list, 'ERR>
       evolve: 'S -> 'E -> 'S

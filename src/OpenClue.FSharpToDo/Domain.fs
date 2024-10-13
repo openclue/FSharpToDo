@@ -86,8 +86,7 @@ type TodoError =
     | AlreadyExists of TodoId
     | NotFound of TodoId
     | InvalidState of string
-    | InvalidCommand of string
-    
+
 type TodoCommandResult = Result<TodoEvent list, TodoError>
 
 module Todo =
@@ -205,4 +204,12 @@ module Todo =
             | Todo.Completed _ -> true
             | _ -> false }
 
-    
+    let loadFromEvents events =
+        List.fold decider.evolve decider.initialState events
+
+    let applyCommand state cmd =
+        let result = cmd |> decider.decide state
+
+        match result with
+        | Ok events -> Ok(events |> loadFromEvents, events)
+        | Error err -> Error err

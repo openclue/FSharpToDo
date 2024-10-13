@@ -4,7 +4,6 @@ namespace OpenClue.FSharpToDo.Persistence
 open System
 open Marten.Events.Aggregation
 open OpenClue.FSharpToDo.Domain
-open OpenClue.FSharpToDo.Domain.Features
 
 [<CLIMutable>]
 type TaskReadModel =
@@ -62,29 +61,27 @@ module Repository =
         async {
             let streamId = TodoId.toGuid taskId
             let eventsArray = events |> List.map box |> List.toArray
+
             try
                 use session = store.LightweightSession()
                 session.Events.Append(streamId, eventsArray) |> ignore
                 do! session.SaveChangesAsync() |> Async.AwaitTask
                 return Ok taskId
-            with
-            | _ -> return Error "Failed to save events" 
+            with _ ->
+                return Error "Failed to save events"
         }
 
     let getEvents (store: IDocumentStore) (taskId: TodoId) =
         async {
             let streamId = TodoId.toGuid taskId
-            
+
             try
                 use session = store.QuerySession()
                 let! events = session.Events.FetchStreamAsync(streamId) |> Async.AwaitTask
-                
-                let events =
-                    events
-                    |> Seq.map (fun e -> e.Data :?> TodoEvent)
-                    |> Seq.toList
-                
+
+                let events = events |> Seq.map (fun e -> e.Data :?> TodoEvent) |> Seq.toList
+
                 return events |> Ok
-            with
-            | _ -> return Error $"Failed to get events for Task {taskId}" 
+            with _ ->
+                return Error $"Failed to get events for Task {taskId}"
         }
