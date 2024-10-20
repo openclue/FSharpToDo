@@ -1,6 +1,7 @@
 module OpenClue.FSharpToDo.Web.Handlers
 
 open System
+open System.Net
 open System.Security.Claims
 open Marten
 open Microsoft.AspNetCore.Http
@@ -13,12 +14,28 @@ type Response =
     | Success of obj
     | Failure of AppError
 
+type ErrorDto = { Message: string }
+
 // For future use - to get the command's initiator
 let private getLoggedUserId (ctx: HttpContext) =
     ctx.User.FindFirst(ClaimTypes.NameIdentifier).Value |> UserId.fromString
 
 let getStore (ctx: HttpContext) =
     ctx.RequestServices.GetRequiredService<IDocumentStore>()
+
+let setStatusCode (code: HttpStatusCode) (ctx: HttpContext) = ctx.Response.StatusCode <- (int code)
+
+let handleError (err: AppError) (next: HttpFunc) (ctx: HttpContext) =
+    match err with
+    | AppError.NotFound id ->
+        setStatusCode HttpStatusCode.NotFound ctx
+        json { Message = $"Todo with id [{id}] not found" } next ctx
+    | AppError.BadRequest msg ->
+        setStatusCode HttpStatusCode.BadRequest ctx
+        json { Message = msg } next ctx
+    | AppError.InternalError _ ->
+        setStatusCode HttpStatusCode.InternalServerError ctx
+        json { Message = "Internal server error" } next ctx
 
 let createTodoHandler =
     fun (next: HttpFunc) (ctx: HttpContext) ->
@@ -28,12 +45,13 @@ let createTodoHandler =
 
             let! result = CreateTodo.handle store cmdDto
 
-            let response =
+            return!
                 match result with
-                | Ok id -> Success id
-                | Error err -> Failure err
+                | Ok id ->
+                    setStatusCode HttpStatusCode.Created ctx
+                    json id next ctx
+                | Error err -> handleError err next ctx
 
-            return! json response next ctx
         }
 
 let assignTodoHandler (todoId: Guid) =
@@ -44,10 +62,10 @@ let assignTodoHandler (todoId: Guid) =
 
             let! result = AssignTodo.handle store todoId cmdDto
 
-            let response =
+            return!
                 match result with
-                | Ok id -> Success id
-                | Error err -> Failure err
-
-            return! json response next ctx
+                | Ok id ->
+                    setStatusCode HttpStatusCode.OK ctx
+                    json id next ctx
+                | Error err -> handleError err next ctx
         }
