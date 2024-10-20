@@ -9,9 +9,7 @@ type AppError =
     | NotFound of TodoId
     | InternalError of string
 
-type Response =
-    | Success of obj
-    | Failure of AppError
+
 
 type CreateTodoDto =
     { Title: string

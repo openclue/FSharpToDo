@@ -9,6 +9,9 @@ open Microsoft.Extensions.DependencyInjection
 open OpenClue.FSharpToDo.Domain
 open OpenClue.FSharpToDo.Web.Features
 
+type Response =
+    | Success of obj
+    | Failure of AppError
 
 // For future use - to get the command's initiator
 let private getLoggedUserId (ctx: HttpContext) =
