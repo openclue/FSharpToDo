@@ -16,56 +16,66 @@ type Response =
 
 type ErrorDto = { Message: string }
 
+module Handlers =
+
 // For future use - to get the command's initiator
-let private getLoggedUserId (ctx: HttpContext) =
-    ctx.User.FindFirst(ClaimTypes.NameIdentifier).Value |> UserId.fromString
+    let private getLoggedUserId (ctx: HttpContext) =
+        ctx.User.FindFirst(ClaimTypes.NameIdentifier).Value |> UserId.fromString
 
-let getStore (ctx: HttpContext) =
-    ctx.RequestServices.GetRequiredService<IDocumentStore>()
+    let getStore (ctx: HttpContext) =
+        ctx.RequestServices.GetRequiredService<IDocumentStore>()
 
-let setStatusCode (code: HttpStatusCode) (ctx: HttpContext) = ctx.Response.StatusCode <- (int code)
+    let setStatusCode (code: HttpStatusCode) (ctx: HttpContext) = ctx.Response.StatusCode <- (int code)
 
-let handleError (err: AppError) (next: HttpFunc) (ctx: HttpContext) =
-    match err with
-    | AppError.NotFound id ->
-        setStatusCode HttpStatusCode.NotFound ctx
-        json { Message = $"Todo with id [{id}] not found" } next ctx
-    | AppError.BadRequest msg ->
-        setStatusCode HttpStatusCode.BadRequest ctx
-        json { Message = msg } next ctx
-    | AppError.InternalError _ ->
-        setStatusCode HttpStatusCode.InternalServerError ctx
-        json { Message = "Internal server error" } next ctx
+    let handleError (err: AppError) (next: HttpFunc) (ctx: HttpContext) =
+        match err with
+        | AppError.NotFound id ->
+            setStatusCode HttpStatusCode.NotFound ctx
+            json { Message = $"Todo with id [{id}] not found" } next ctx
+        | AppError.BadRequest msg ->
+            setStatusCode HttpStatusCode.BadRequest ctx
+            json { Message = msg } next ctx
+        | AppError.InternalError _ ->
+            setStatusCode HttpStatusCode.InternalServerError ctx
+            json { Message = "Internal server error" } next ctx
 
-let createTodoHandler =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let store = getStore ctx
-            let! cmdDto = ctx.BindJsonAsync<CreateTodoDto>()
+    let createTodoHandler =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let store = getStore ctx
+                let! cmdDto = ctx.BindJsonAsync<CreateTodoDto>()
 
-            let! result = CreateTodo.handle store cmdDto
+                let! result = CreateTodo.handle store cmdDto
 
-            return!
-                match result with
-                | Ok id ->
-                    setStatusCode HttpStatusCode.Created ctx
-                    json id next ctx
-                | Error err -> handleError err next ctx
+                return!
+                    match result with
+                    | Ok id ->
+                        setStatusCode HttpStatusCode.Created ctx
+                        json id next ctx
+                    | Error err -> handleError err next ctx
 
-        }
+            }
 
-let assignTodoHandler (todoId: Guid) =
-    fun (next: HttpFunc) (ctx: HttpContext) ->
-        task {
-            let store = getStore ctx
-            let! cmdDto = ctx.BindJsonAsync<AssignTodoDto>()
+    let assignTodoHandler (todoId: Guid) =
+        fun (next: HttpFunc) (ctx: HttpContext) ->
+            task {
+                let store = getStore ctx
+                let! cmdDto = ctx.BindJsonAsync<AssignTodoDto>()
 
-            let! result = AssignTodo.handle store todoId cmdDto
+                let! result = AssignTodo.handle store todoId cmdDto
 
-            return!
-                match result with
-                | Ok id ->
-                    setStatusCode HttpStatusCode.OK ctx
-                    json id next ctx
-                | Error err -> handleError err next ctx
-        }
+                return!
+                    match result with
+                    | Ok id ->
+                        setStatusCode HttpStatusCode.OK ctx
+                        json id next ctx
+                    | Error err -> handleError err next ctx
+            }
+
+module Api =
+    
+    let routes : HttpHandler =
+        choose [
+            POST >=> route "/todos" >=> Handlers.createTodoHandler
+            POST >=> routef "/todos/%O/assign" Handlers.assignTodoHandler
+        ]
