@@ -17,6 +17,9 @@ module NonEmptyString =
 type TodoId = private Todo of Guid
 
 module TodoId =
+    
+    let toString (Todo id) = id.ToString()
+    
     let toGuid (Todo id) = id
 
     let fromGuid id =

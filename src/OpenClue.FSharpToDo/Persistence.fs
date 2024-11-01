@@ -7,7 +7,8 @@ open OpenClue.FSharpToDo.Domain
 
 [<CLIMutable>]
 type TaskReadModel =
-    { TaskId: Guid
+    { Id: Guid
+      TaskId: Guid
       AuthorId: Guid
       Title: string
       AssigneeId: Guid option
@@ -22,6 +23,7 @@ type TaskReadModelProjection() =
         match e with
         | TodoCreated args ->
             { rm with
+                Id = TodoId.toGuid args.Id
                 TaskId = TodoId.toGuid args.Id
                 AuthorId = UserId.toGuid args.Author
                 Title = NonEmptyString.value args.Title

@@ -1,11 +1,14 @@
 module OpenClue.FSharpToDo.App
 
 open Giraffe
+open Marten
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
+open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
+open OpenClue.FSharpToDo.Persistence
 open OpenClue.FSharpToDo.Web.Handlers
 open Serilog
 
@@ -17,7 +20,10 @@ let createLogger (builder: ILoggingBuilder) =
 
 let configureApp (app: IApplicationBuilder) = app.UseGiraffe Api.routes
 
-let configureServices (services: IServiceCollection) =
+let configureServices (context: WebHostBuilderContext) (services: IServiceCollection) =
+    let connectionString = context.Configuration.GetConnectionString("Marten")
+    let documentStore = Repository.createStore connectionString :> IDocumentStore
+    services.AddSingleton<IDocumentStore>(documentStore) |> ignore
     services.AddGiraffe() |> ignore
     services.AddLogging(createLogger) |> ignore
 
