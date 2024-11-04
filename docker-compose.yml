@@ -7,15 +7,15 @@
     ports:
       - "8080:8080"
     environment:
-      - ConnectionStrings__Marten=Host=db;Database=todo;Username=postgres;Password=Pa$$w0rd
+      - ConnectionStrings__Marten=Host=db;Database=todo;Username=postgres;Password=Gh5634!X
     depends_on:
       - db
   db:
     image: postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Pa$$w0rd
-      - POSTGRES_DB=todo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Gh5634!X
+      POSTGRES_DB: todo
     ports:
       - "5432:5432"
     volumes:

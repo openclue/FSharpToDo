@@ -1,7 +1,7 @@
 module OpenClue.FSharpToDo.Tests.Shared
 
-open OpenClue.FSharpToDo.Domain
 open System
+open OpenClue.FSharpToDo.Domain
 
 let unwrapOrFail result =
     match result with

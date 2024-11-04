@@ -56,6 +56,7 @@ module Handlers =
                 return!
                     match result with
                     | Ok id ->
+                        let id = id |> TodoId.toGuid
                         setStatusCode HttpStatusCode.Created ctx
                         json id next ctx
                     | Error err -> handleError err next ctx

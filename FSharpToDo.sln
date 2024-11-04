@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "OpenClue.FSharpTodo.Domain", "src\OpenClue.FSharpTodo.Domain\OpenClue.FSharpTodo.Domain.fsproj", "{FF5A57A5-81C9-43C0-8091-7C43B77100B9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,14 +33,9 @@ Global
 		{80DAD510-2B8E-4809-A509-A24E13CBA377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80DAD510-2B8E-4809-A509-A24E13CBA377}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80DAD510-2B8E-4809-A509-A24E13CBA377}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF5A57A5-81C9-43C0-8091-7C43B77100B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF5A57A5-81C9-43C0-8091-7C43B77100B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF5A57A5-81C9-43C0-8091-7C43B77100B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF5A57A5-81C9-43C0-8091-7C43B77100B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{61B61516-E74D-40E9-A756-727F153A82B9} = {6EF96BFA-23E1-4BCB-99FF-CED092922836}
 		{80DAD510-2B8E-4809-A509-A24E13CBA377} = {48EEFC7C-7827-45DF-9AC5-119C80991815}
-		{FF5A57A5-81C9-43C0-8091-7C43B77100B9} = {6EF96BFA-23E1-4BCB-99FF-CED092922836}
 	EndGlobalSection
 EndGlobal
