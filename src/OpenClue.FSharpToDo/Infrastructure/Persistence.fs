@@ -4,7 +4,6 @@ open System
 open System.Collections.Generic
 open FsToolkit.ErrorHandling
 open Marten.Events.Aggregation
-open Microsoft.AspNetCore.Identity
 open OpenClue.FSharpToDo.Domain
 open OpenClue.FSharpToDo.Infrastructure.Dto
 

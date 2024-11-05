@@ -18,7 +18,7 @@ type ErrorDto = { Message: string }
 
 module Handlers =
 
-// For future use - to get the command's initiator
+    // For future use - to get the command's initiator
     let private getLoggedUserId (ctx: HttpContext) =
         ctx.User.FindFirst(ClaimTypes.NameIdentifier).Value |> UserId.fromString
 
@@ -80,10 +80,9 @@ module Handlers =
             }
 
 module Api =
-    
-    let routes : HttpHandler =
-        choose [
-            GET >=> route "/echo" >=> text "Hello, World!"
-            POST >=> route "/todos" >=> Handlers.createTodoHandler
-            POST >=> routef "/todos/%O/assign" Handlers.assignTodoHandler
-        ]
+
+    let routes: HttpHandler =
+        choose
+            [ GET >=> route "/echo" >=> text "Hello, World!"
+              POST >=> route "/todos" >=> Handlers.createTodoHandler
+              POST >=> routef "/todos/%O/assign" Handlers.assignTodoHandler ]

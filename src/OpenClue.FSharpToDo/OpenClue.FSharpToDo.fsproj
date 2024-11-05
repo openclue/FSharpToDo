@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Domain\Shared.fs" />
-        <Compile Include="Domain\Domain.fs" />
-        <Compile Include="Infrastructure\Dto.fs" />
-        <Compile Include="Infrastructure\Persistence.fs" />
-        <Compile Include="Features.fs" />
+        <Compile Include="Domain\Shared.fs"/>
+        <Compile Include="Domain\Domain.fs"/>
+        <Compile Include="Infrastructure\Dto.fs"/>
+        <Compile Include="Infrastructure\Persistence.fs"/>
+        <Compile Include="Features.fs"/>
         <Compile Include="Handlers.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
@@ -21,18 +21,18 @@
         <PackageReference Include="FsToolkit.ErrorHandling" Version="4.17.0"/>
         <PackageReference Include="Giraffe" Version="7.0.1"/>
         <PackageReference Include="Marten" Version="7.29.0"/>
-        <PackageReference Include="Serilog" Version="4.1.0" />
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
-        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog" Version="4.1.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.2"/>
+        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-      <Content Include="Dockerfile" />
-      <Content Include="Properties\launchSettings.json" />
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+        <Content Include="Dockerfile"/>
+        <Content Include="Properties\launchSettings.json"/>
     </ItemGroup>
 
 </Project>

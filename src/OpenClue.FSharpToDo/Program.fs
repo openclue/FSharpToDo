@@ -21,12 +21,14 @@ let createLogger (builder: ILoggingBuilder) =
 let configureApp (app: IApplicationBuilder) = app.UseGiraffe Api.routes
 
 let configureServices (context: WebHostBuilderContext) (services: IServiceCollection) =
-    
+
     let connectionString = context.Configuration.GetConnectionString("Marten")
-    services.AddSingleton<IDocumentStore>(Repository.createStore connectionString) |> ignore
-    
+
+    services.AddSingleton<IDocumentStore>(Repository.createStore connectionString)
+    |> ignore
+
     services.AddMarten(Repository.initMarten connectionString) |> ignore
-    
+
     services.AddGiraffe() |> ignore
     services.AddLogging(createLogger) |> ignore
 
@@ -41,5 +43,5 @@ let main _ =
         .ConfigureWebHostDefaults(configureHost)
         .Build()
         .Run()
-    
+
     0
