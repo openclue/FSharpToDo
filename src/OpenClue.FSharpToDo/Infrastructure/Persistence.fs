@@ -21,32 +21,31 @@ type TaskReadModel =
 type TaskReadModelProjection() =
     inherit SingleStreamProjection<TaskReadModel>()
 
-    member this.Apply (e: obj) (rm: TaskReadModel) =
-        match e with
-        | :? TodoCreatedEventDto as evt ->
-            { rm with
-                Id = evt.TodoId
-                TaskId = evt.TodoId
-                AuthorId = evt.AuthorId
-                Title = evt.Title
-                AssigneeId = Option.None
-                Status = "Unassigned"
-                Priority = evt.Priority
-                CompletedById = Option.None }
-        | :? TodoAssignedEventDto as evt ->
-            { rm with
-                AssigneeId = evt.AssigneeId |> Some
-                Status = "Assigned" }
+    member this.Apply (rm: TaskReadModel, evt: TodoCreatedEventDto) =
+        { rm with
+            Id = evt.TodoId
+            TaskId = evt.TodoId
+            AuthorId = evt.AuthorId
+            Title = evt.Title
+            AssigneeId = Option.None
+            Status = "Unassigned"
+            Priority = evt.Priority
+            CompletedById = Option.None }
 
-        | :? TodoUnassignedEventDto as _ ->
-            { rm with
-                AssigneeId = Option.None
-                Status = "Unassigned" }
-        | :? TodoCompletedEventDto as evt ->
-            { rm with
-                CompletedById = evt.CompletedById |> Some
-                Status = "Completed" }
-        | _ -> rm
+    member this.Apply (rm: TaskReadModel, evt: TodoAssignedEventDto) =
+        { rm with
+            AssigneeId = evt.AssigneeId |> Some
+            Status = "Assigned" }
+
+    member this.Apply (rm: TaskReadModel, evt: TodoUnassignedEventDto) =
+        { rm with
+            AssigneeId = Option.None
+            Status = "Unassigned" }
+
+    member this.Apply (rm: TaskReadModel, evt: TodoCompletedEventDto) =
+        { rm with
+            CompletedById = evt.CompletedById |> Some
+            Status = "Completed" }
 
 module Repository =
 
@@ -88,7 +87,7 @@ module Repository =
     let initMarten (connectionString: string) (opts: StoreOptions) =
         opts.Connection connectionString
         opts.AutoCreateSchemaObjects <- AutoCreate.All
-        opts.Projections.Add<TaskReadModelProjection>(ProjectionLifecycle.Inline)
+        opts.Projections.Add<TaskReadModelProjection>(ProjectionLifecycle.Async)
 
     let saveEvents (store: IDocumentStore) (taskId: TodoId, events: TodoEvent list) =
         async {
