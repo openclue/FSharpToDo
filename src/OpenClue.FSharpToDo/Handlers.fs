@@ -43,14 +43,7 @@ module Handlers =
         fun (next: HttpFunc) (ctx: HttpContext) ->
             task {
                 let store = getStore ctx
-                (*
-                let! body = ctx.ReadBodyFromRequestAsync()
-                Console.Error.WriteLine($"CreateTodoDto: [{body}]")
-                *)
                 let! cmdDto = ctx.BindJsonAsync<CreateTodoDto>()
-                Console.Error.WriteLine($"CreateTodoDto.Title: [{cmdDto.Title}]")
-                Console.Error.WriteLine($"CreateTodoDto.AuthorId: [{cmdDto.AuthorId}]")
-                Console.Error.WriteLine($"CreateTodoDto.Priority: [{cmdDto.Priority}]")
                 let! result = CreateTodo.handle store cmdDto
 
                 return!
